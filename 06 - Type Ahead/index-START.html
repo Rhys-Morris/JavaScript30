@@ -1,22 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Type Ahead 👀</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <form class="search-form">
+      <input type="text" class="search" placeholder="City or State" />
+      <ul class="suggestions"></ul>
+    </form>
 
-  <form class="search-form">
-    <input type="text" class="search" placeholder="City or State">
-    <ul class="suggestions">
-      <li>Filter for a city</li>
-      <li>or a state</li>
-    </ul>
-  </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+    <script>
+      // HTML ELEMENTS
+      const results = document.querySelector(".suggestions");
+      const input = document.querySelector(".search");
 
-</script>
-</body>
+      // Get Cities
+      const cities = [];
+      const endpoint =
+        "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
+
+      const getCities = async function () {
+        const res = await fetch(endpoint);
+        const data = await res.json();
+        cities.push(...data);
+      };
+      getCities();
+
+      // Filter cities on search input
+      const filterCities = function (regExp, cities) {
+        return cities.filter(
+          (place) => place.state.match(regExp) || place.city.match(regExp)
+        );
+      };
+
+      // Clear results
+      const clearResults = function () {
+        results.innerHTML = "";
+      };
+
+      // Sort results by population - highest to lowest
+      const sortByPopulation = function (cities) {
+        return cities.sort((cityA, cityB) => {
+          return Number(cityA.population) > Number(cityB.population) ? -1 : 1;
+        });
+      };
+
+      // Render results to DOM
+      const renderResults = function (regExp, stringToInsert, cities) {
+        const markup = cities
+          .map((place) => {
+            // Insert highlighter class
+            const cityString = `${place.city}, ${place.state}`.replace(
+              regExp,
+              `<span class="hl">${stringToInsert}</span>`
+            );
+            return `
+              <li>
+                <span class="name">${cityString}</span>
+                <span class="population">${place.population}</span>
+              </li>
+            `;
+          })
+          .join("");
+        results.insertAdjacentHTML("afterbegin", markup);
+      };
+
+      // Listen for changes on input field
+      input.addEventListener("keyup", function (e) {
+        // Guard empty string
+        if (!this.value) {
+          clearResults();
+          return;
+        }
+
+        const regExp = new RegExp(this.value, "gi"); // Create regex based on search input value
+        const filteredCities = filterCities(regExp, cities);
+        const sortedCities = sortByPopulation(filteredCities);
+        clearResults();
+        renderResults(regExp, this.value, sortedCities);
+      });
+    </script>
+  </body>
 </html>
