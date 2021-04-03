@@ -58,7 +58,38 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+const getKeyAndAudio = (e) => {
+  const keyCode = e.keyCode;
+  // Get pressed key and audio button
+  return keyAndAudio = Array.from(document.querySelectorAll(`[data-key='${keyCode}']`));
+}
 
+const playSound = (audioEl) => {
+  audioEl.currentTime = 0; // Rewind audio to start
+  audioEl.play();
+}
+
+window.addEventListener('keydown', (e) => {
+  const [pressedKey, audio] = getKeyAndAudio(e);
+
+  // Guard against other key presses
+  if (!pressedKey || !audio) return
+
+  playSound(audio);
+
+  // Add playing class to key
+  pressedKey.classList.add('playing');
+})
+
+// Reverse changes on keyup
+window.addEventListener('keyup', (e) => {
+  const [pressedKey] = getKeyAndAudio(e);
+
+  if (!pressedKey) return
+
+  // Remove playing class
+  pressedKey.classList.remove('playing');
+})
 </script>
 
 

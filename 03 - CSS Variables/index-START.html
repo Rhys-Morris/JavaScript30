@@ -21,6 +21,19 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
+    
+    /* Apply CSS variables */
+    :root {
+      --base: #ffc600;
+      --spacing: 10px;
+      --blur: 10px;
+    }
+
+    img {
+      padding: var(--spacing);
+      filter: blur(var(--blur));
+      background-color: var(--base);
+    }
 
     /*
       misc styles, nothing to do with CSS variables
@@ -45,6 +58,23 @@
   </style>
 
   <script>
+
+    // Get document root
+    const root = document.documentElement;
+
+    const handleUpdate = function() {
+      const suffix = this.id;
+      root.style.setProperty(
+        `--${suffix}`, `${this.value}${suffix === 'base' ? '' : 'px'}`
+      );
+    };
+
+    // Update variables on change event
+    const inputs = document.querySelectorAll('input')
+    
+    inputs.forEach(input => input.addEventListener('change', handleUpdate));
+    inputs.forEach(input => input.addEventListener('mousemove', handleUpdate));
+
   </script>
 
 </body>

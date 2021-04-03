@@ -62,11 +62,35 @@
       background: black;
       position: absolute;
       top: 50%;
+      transform-origin: 100%; /* Rotate from the end - by default is middle (50%) */
+      transition: all .05s ease-out;
     }
 
   </style>
-
+  
   <script>
+    // Select HTML elements
+    const [hourHand, minHand, secHand] = document.querySelectorAll('.hand');
+
+    function setDate() {
+      // Get Time
+      const curTime = new Date();
+      const secs = curTime.getSeconds();
+      const mins = curTime.getMinutes();
+      const hours = curTime.getHours();
+      
+      // Get rotations
+      const secDegrees = ((secs / 60) * 360) + 90;  // + 90 to account for starting offset
+      const minDegrees = ((mins / 60) * 360) + 90;
+      const hourDegrees = ((hours / 12) * 360) + 90; 
+      
+      // Apply rotations
+      secHand.style.transform = `rotate(${secDegrees}deg)`
+      minHand.style.transform = `rotate(${minDegrees}deg)`
+      hourHand.style.transform = `rotate(${hourDegrees}deg)`
+    }
+
+    setInterval(setDate, 1000);
 
 
   </script>
