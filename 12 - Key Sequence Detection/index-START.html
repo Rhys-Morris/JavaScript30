@@ -7,6 +7,17 @@
 </head>
 <body>
 <script>
+
+  const hiddenCode = "secret";
+  const loggedKeys = [];
+
+
+  window.addEventListener('keyup', (e) => {
+    loggedKeys.push(e.key)
+    const check = loggedKeys.slice(-hiddenCode.length)
+    if (check.join('') === hiddenCode) console.log('Secret!');
+  })
+
 </script>
 </body>
 </html>

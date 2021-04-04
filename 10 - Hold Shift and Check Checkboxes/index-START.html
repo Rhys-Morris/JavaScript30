@@ -96,6 +96,76 @@
   </div>
 
 <script>
+
+  const checkboxes = Array.from(document.querySelectorAll('input'));
+  let shiftDown = false;
+  let checked = [];
+
+
+  const handleCheck = function() {
+    if (this.checked) checked.push(this)
+
+    // Remove from check array when unchecking
+    if (!this.checked) {
+      const index = checked.indexOf(this)
+      checked.splice(index, 1);
+    }
+
+    // Handle shiftdown checking
+    if (this.checked === true && shiftDown) {
+      if (checked.length === 1) return // Can't check between when length 1
+
+      // Map checked boxes to index positions and sort
+      const indexPositions = checked.map(checkbox => {
+        return checkboxes.indexOf(checkbox)
+      }).sort();
+      // Find high and low checked index positions
+      [lowestIndex, highestIndex] = [
+        indexPositions[0],
+        indexPositions[indexPositions.length - 1]
+      ];
+      
+      // Find largest difference between indexes
+      const clickedIndex = checkboxes.indexOf(this);
+      const checkTo = (highestIndex - clickedIndex) > (clickedIndex - lowestIndex) ? highestIndex : lowestIndex;
+      
+      // Check boxes
+      if (checkTo === highestIndex) {
+        checkboxes.slice(clickedIndex, highestIndex)
+          .forEach(checkbox => {
+            checkbox.checked = true
+            // Add to checked array
+            checked.push(checkbox)
+          })
+      } else {
+        checkboxes.slice(lowestIndex, clickedIndex)
+        .forEach(checkbox => {
+            checkbox.checked = true
+            // Add to checked array
+            checked.push(checkbox)
+          })
+      }
+
+      // Make sure checked array does not contain duplicates
+      checked = Array.from(new Set(checked))
+    }
+  }
+
+
+  checkboxes.forEach(checkbox => checkbox.addEventListener('change', handleCheck))
+
+  // Listen for shift down
+  window.addEventListener('keydown', (e) => {
+    if (e.keyCode !== 16) return
+    shiftDown = true;
+  })
+
+  // Listen for shift up
+  window.addEventListener('keyup', (e) => {
+    if (e.keyCode !== 16) return
+    shiftDown = false;
+  })
+
 </script>
 </body>
 </html>

@@ -18,22 +18,32 @@
     }
 
     // Regular
+    console.log('Hello');
 
     // Interpolated
+    console.log('Hello I am a %s string!', 'poo');
 
     // Styled
+    console.log('%cI am some great text!', 'font-size: 20px; color: red;');
 
     // warning!
+    console.warn('Oh no!');
 
     // Error :|
+    console.error('Oh no!');
 
     // Info
+    console.info('Crocodile are evil!');
 
     // Testing
+    console.assert(1 === 2, 'That is wrong') // Only fires if assertion is incorrect
 
     // clearing
+    console.clear();
 
     // Viewing DOM Elements
+    const p = document.querySelector('p')
+    console.dir([p]);
 
     // Grouping together
 
